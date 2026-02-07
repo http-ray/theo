@@ -120,13 +120,12 @@ body {
 /* Move history panel (top-right) */
 .move-history-panel {
   position: fixed;
-  top: 90px;
+  top: 81px;
   right: 0;
   background: rgba(0, 0, 0, 0.35);
   padding: 8px 12px;
   border-radius: 8px;
-  min-width: 170px;
-  max-width: 220px;
+  width: 145px;
   font-size: 0.8rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
 }
@@ -303,6 +302,16 @@ body {
   width: 200px;
   height: auto;
   filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.7));
+}
+
+.mascot-div {
+  display: flex;
+  flex-direction: column;
+}
+
+.name-tag {
+  display: flex;
+  align-items: center;
 }
 
 /* Speech box */

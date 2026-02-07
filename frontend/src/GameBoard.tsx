@@ -808,11 +808,15 @@ const GameBoard: React.FC<GameBoardProps> = ({
         </div>
 
         {/* Instructor mascot avatar */}
-        <img
+        <div className="mascot-div">
+          <img
           src={avatar}
           className="mascot"
           alt="Instructor"
         />
+        <p className="name-tag">Prof. Theo</p>
+        </div>
+        
 
         {/* Exit button */}
         {onExit && (

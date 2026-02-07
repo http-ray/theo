@@ -20,6 +20,8 @@ const LessonReview: React.FC<LessonReviewProps> = ({ gameId, eloBucket, onNewLes
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const theoAvatarSrc = "/images/Theo_magical.PNG";
+
   useEffect(() => {
     let cancelled = false;
 
@@ -86,8 +88,8 @@ const LessonReview: React.FC<LessonReviewProps> = ({ gameId, eloBucket, onNewLes
           {/* Instructor avatar */}
           <div className="avatar-wrapper">
             <img
-              src="public/images/knight_white.png"
-              alt="Instructor Avatar"
+              src={theoAvatarSrc}
+              alt="Theo"
               className="review-avatar"
             />
           </div>

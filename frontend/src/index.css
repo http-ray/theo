@@ -311,28 +311,217 @@ body {
 
 /* Lesson Review */
 .review-root {
-  min-height: 80vh;
-  margin-top: 40px;
+  min-height: calc(100vh - 120px);
+  margin-top: 96px;
   display: flex;
-  background: #1b1328;
+  width: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(43, 32, 66, 0.9),
+    rgba(22, 15, 38, 0.95)
+  );
   color: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 30px 60px rgba(20, 10, 40, 0.7);
+  border: 1px solid rgba(180, 150, 255, 0.12);
 }
 
 .review-sidebar {
   width: 30%;
-  background: #c9c3da;
-  color: #241a36;
-  padding: 2px 24px;
+  min-width: 240px;
+  background: rgba(60, 40, 90, 0.35);
+  color: rgba(230, 220, 255, 0.92);
+  padding: 18px 20px;
   display: flex;
   flex-direction: column;
+  gap: 14px;
+  border-right: 1px solid rgba(180, 150, 255, 0.12);
 }
 
 .review-content {
   width: 70%;
-  padding: 40px 60px;
-  background: linear-gradient(
-    180deg,
-    #2b2042,
-    #160f26
-  );
+  padding: 28px 32px;
+  position: relative;
+}
+
+.sidebar-title {
+  margin: 0;
+  font-size: 1.1rem;
+  letter-spacing: 0.08em;
+  font-family: "Georgia", "Times New Roman", serif;
+  text-transform: uppercase;
+  opacity: 0.95;
+}
+
+.review-meta {
+  padding: 14px 14px;
+  border-radius: 12px;
+  background: rgba(160, 120, 255, 0.12);
+  border: 1px solid rgba(180, 150, 255, 0.12);
+}
+
+.meta-label {
+  margin: 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  opacity: 0.75;
+  text-transform: uppercase;
+}
+
+.meta-value {
+  margin: 6px 0 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: rgba(230, 220, 255, 0.95);
+  text-shadow: 0 0 18px rgba(180, 150, 255, 0.18);
+}
+
+.new-lesson-sidebar-btn,
+.new-lesson-btn {
+  border: 1px solid rgba(180, 150, 255, 0.18);
+  background: rgba(160, 120, 255, 0.14);
+  color: rgba(230, 220, 255, 0.92);
+  padding: 10px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  letter-spacing: 0.06em;
+  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.new-lesson-sidebar-btn:hover,
+.new-lesson-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(160, 120, 255, 0.2);
+  border-color: rgba(180, 150, 255, 0.28);
+}
+
+.new-lesson-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  padding: 8px 10px;
+  font-size: 0.85rem;
+}
+
+.review-center {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-top: 28px;
+}
+
+.avatar-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.review-avatar {
+  width: 170px;
+  height: auto;
+  filter:
+    drop-shadow(0 0 25px rgba(160, 120, 255, 0.35))
+    drop-shadow(0 10px 30px rgba(0, 0, 0, 0.7));
+}
+
+.takeaways-section {
+  padding: 18px 18px;
+  border-radius: 16px;
+  background: rgba(160, 120, 255, 0.1);
+  border: 1px solid rgba(180, 150, 255, 0.12);
+}
+
+.takeaways-title {
+  margin: 0 0 12px;
+  font-size: 1.05rem;
+  letter-spacing: 0.06em;
+  font-family: "Georgia", "Times New Roman", serif;
+  opacity: 0.95;
+}
+
+.takeaways-loading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  opacity: 0.9;
+}
+
+.loading-spinner {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(180, 150, 255, 0.22);
+  border-top-color: rgba(230, 220, 255, 0.85);
+  animation: review-spin 0.9s linear infinite;
+}
+
+@keyframes review-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.takeaways-error {
+  margin: 0 0 10px;
+  color: rgba(230, 220, 255, 0.88);
+  opacity: 0.9;
+}
+
+.takeaways-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.takeaway-item {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 10px;
+  align-items: start;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(27, 19, 40, 0.35);
+  border: 1px solid rgba(180, 150, 255, 0.1);
+}
+
+.takeaway-bullet {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(160, 120, 255, 0.22);
+  border: 1px solid rgba(180, 150, 255, 0.18);
+  color: rgba(230, 220, 255, 0.95);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.takeaway-text {
+  line-height: 1.5;
+  color: rgba(230, 220, 255, 0.9);
+}
+
+@media (max-width: 860px) {
+  .review-root {
+    flex-direction: column;
+  }
+
+  .review-sidebar,
+  .review-content {
+    width: 100%;
+  }
+
+  .review-content {
+    padding: 18px 18px;
+  }
+
+  .new-lesson-btn {
+    position: static;
+    align-self: flex-end;
+    margin-bottom: 8px;
+  }
 }

@@ -50,8 +50,12 @@ function App() {
           onGoToReview={handleGoToReview}
         />
       )}
-      {currentScreen === 'review' && (
-        <LessonReview />
+      {currentScreen === 'review' && gameData && (
+        <LessonReview 
+          gameId={gameData.gameId}
+          eloBucket={gameData.eloBucket}
+          onNewLesson={handleBackToSelect}
+        />
       )}
     </>
   )

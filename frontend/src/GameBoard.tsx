@@ -87,6 +87,45 @@ function syncPiecesFromGame(chessGame: Chess): Piece[] {
 }
 
 /* =========================
+   Coaching messages from eval
+========================= */
+
+function generateCoachingMessage(
+  evalPlayerCp: number | null,
+  matePlayer: number | null,
+  prevEvalPlayerCp: number | null,
+  _moveNumber: number
+): string {
+  // Mate situations
+  if (matePlayer !== null) {
+    if (matePlayer > 0) return "You have a forced checkmate! Find the winning sequence.";
+    if (matePlayer < 0) return "Careful — your opponent has a mating threat. Look for a defense.";
+  }
+
+  if (evalPlayerCp === null) return "Interesting position. Think about what each side wants to do.";
+
+  const evalPawns = evalPlayerCp / 100;
+
+  // Compare to previous eval to detect blunders / great moves
+  if (prevEvalPlayerCp !== null) {
+    const swing = evalPlayerCp - prevEvalPlayerCp;
+    if (swing >= 200) return "Excellent move! You've gained a significant advantage.";
+    if (swing >= 100) return "Good move! You're improving your position.";
+    if (swing <= -300) return "That was a mistake — you lost significant ground. Watch for tactics!";
+    if (swing <= -150) return "That move wasn't ideal. Try to think about what your opponent threatens.";
+  }
+
+  // Positional messages based on current eval
+  if (evalPawns > 3) return "You're winning! Stay focused and convert your advantage.";
+  if (evalPawns > 1.5) return "You have a nice advantage. Look for ways to press it.";
+  if (evalPawns > 0.5) return "Slightly better for you. Keep developing and controlling the center.";
+  if (evalPawns > -0.5) return "The position is roughly equal. Good, solid play!";
+  if (evalPawns > -1.5) return "Your opponent is slightly better. Look for active moves.";
+  if (evalPawns > -3) return "You're behind. Try to create counterplay or simplify carefully.";
+  return "Tough position. Stay alert and look for defensive resources.";
+}
+
+/* =========================
    Component
 ========================= */
 
@@ -122,6 +161,8 @@ const GameBoard: React.FC<GameBoardProps> = ({
   const [showMoveHistory, setShowMoveHistory] = useState(false);
   const [isWaitingForAI, setIsWaitingForAI] = useState(false);
   const [evaluation, setEvaluation] = useState<string>("");
+  const [prevEvalPlayerCp, setPrevEvalPlayerCp] = useState<number | null>(null);
+  const [moveCount, setMoveCount] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [gameOutcome, setGameOutcome] = useState<string | null>(null);
   const [winner, setWinner] = useState<string | null>(null);
@@ -207,7 +248,16 @@ const GameBoard: React.FC<GameBoardProps> = ({
 
   async function handlePlayerMove(from: string, to: string) {
     try {
-      const move = game.move({ from: from as any, to: to as any });
+      // Check if this is a promotion move (pawn reaching the last rank)
+      const piece = game.get(from as any);
+      const isPromotion = piece?.type === 'p' && 
+        ((piece.color === 'w' && to[1] === '8') || (piece.color === 'b' && to[1] === '1'));
+
+      const move = game.move({ 
+        from: from as any, 
+        to: to as any,
+        ...(isPromotion ? { promotion: 'q' } : {})
+      });
       if (!move) {
         console.log("Illegal move:", from, "→", to);
         return;
@@ -217,15 +267,17 @@ const GameBoard: React.FC<GameBoardProps> = ({
       setPieces(syncPiecesFromGame(game));
       
       // Add to move history
-      const moveNotation = `${playerColor}: ${move.from}-${move.to}`;
+      const promoSuffix = move.promotion ? '=' + move.promotion.toUpperCase() : '';
+      const moveNotation = `${playerColor}: ${move.from}-${move.to}${promoSuffix}`;
       setMoveHistory(prev => [...prev, moveNotation]);
       
       console.log("Move successful:", move.from, "→", move.to, "-", move.piece);
 
       // Send to backend and get AI response
       setIsWaitingForAI(true);
+      setDialog("Thinking...");
       try {
-        const response = await submitMove(gameId, move.from, move.to);
+        const response = await submitMove(gameId, move.from, move.to, move.promotion || undefined);
         
         console.log("Backend response:", response);
         console.log("Game over check:", {
@@ -237,13 +289,38 @@ const GameBoard: React.FC<GameBoardProps> = ({
         
         // Check for game over
         if (response.game_over) {
+          // Apply AI move FIRST so the board shows the final position
+          if (response.engine_reply_uci) {
+            const aiFrom = response.engine_reply_uci.slice(0, 2);
+            const aiTo = response.engine_reply_uci.slice(2, 4);
+            const aiPromotion = response.engine_reply_uci.length > 4 
+              ? response.engine_reply_uci[4] 
+              : undefined;
+            
+            const aiMove = game.move({ 
+              from: aiFrom as any, 
+              to: aiTo as any,
+              ...(aiPromotion ? { promotion: aiPromotion } : {})
+            });
+            
+            if (aiMove) {
+              setPieces(syncPiecesFromGame(game));
+              const aiColor = playerColor === 'white' ? 'black' : 'white';
+              const aiMoveNotation = `${aiColor}: ${aiMove.from}-${aiMove.to}${aiMove.promotion ? '=' + aiMove.promotion.toUpperCase() : ''}`;
+              setMoveHistory(prev => [...prev, aiMoveNotation]);
+            } else if (response.fen_after_engine) {
+              game.load(response.fen_after_engine);
+              setPieces(syncPiecesFromGame(game));
+            }
+          }
+
           setGameOver(true);
           setGameOutcome(response.outcome || null);
           setWinner(response.winner || null);
           
           // Set appropriate dialog message
           if (response.outcome === "stalemate") {
-            setDialog("Stalemate! The game is a draw - no legal moves available.");
+            setDialog("Stalemate! The game is a draw — no legal moves available.");
           } else if (response.outcome === "checkmate") {
             if (response.winner === playerColor) {
               setDialog("Checkmate! You won! Excellent play!");
@@ -259,6 +336,9 @@ const GameBoard: React.FC<GameBoardProps> = ({
           } else {
             setDialog("The game has ended in a draw.");
           }
+          
+          setIsWaitingForAI(false);
+          return; // Don't run normal continuation logic
         }
         
         // Update evaluation
@@ -268,28 +348,86 @@ const GameBoard: React.FC<GameBoardProps> = ({
         } else if (response.mate_player !== null) {
           setEvaluation(`Mate in ${response.mate_player}`);
         }
+
+        // Update coaching dialog
+        const newMoveCount = moveCount + 1;
+        setMoveCount(newMoveCount);
+
+        if (response.llm_response) {
+          setDialog(response.llm_response);
+        } else {
+          const coachMsg = generateCoachingMessage(
+            response.eval_player_cp,
+            response.mate_player ?? null,
+            prevEvalPlayerCp,
+            newMoveCount
+          );
+          setDialog(coachMsg);
+        }
+
+        setPrevEvalPlayerCp(response.eval_player_cp);
         
-        // Apply AI move
+        // Apply AI move (non-game-over case)
         if (response.engine_reply_uci) {
           const aiFrom = response.engine_reply_uci.slice(0, 2);
           const aiTo = response.engine_reply_uci.slice(2, 4);
+          const aiPromotion = response.engine_reply_uci.length > 4 
+            ? response.engine_reply_uci[4] 
+            : undefined;
           
           const aiMove = game.move({ 
             from: aiFrom as any, 
-            to: aiTo as any 
+            to: aiTo as any,
+            ...(aiPromotion ? { promotion: aiPromotion } : {})
           });
           
           if (aiMove) {
             setPieces(syncPiecesFromGame(game));
             const aiColor = playerColor === 'white' ? 'black' : 'white';
-            const aiMoveNotation = `${aiColor}: ${aiMove.from}-${aiMove.to}`;
+            const aiMoveNotation = `${aiColor}: ${aiMove.from}-${aiMove.to}${aiMove.promotion ? '=' + aiMove.promotion.toUpperCase() : ''}`;
             setMoveHistory(prev => [...prev, aiMoveNotation]);
-            console.log("AI move:", aiMove.from, "→", aiMove.to);
+            console.log("AI move:", aiMove.from, "→", aiMove.to, aiMove.promotion ? `(=${aiMove.promotion})` : '');
+
+            // Check if engine move caused game over locally (safety net)
+            if (game.isGameOver()) {
+              setGameOver(true);
+              if (game.isCheckmate()) {
+                const localWinner = game.turn() === 'w' ? 'black' : 'white';
+                setGameOutcome("checkmate");
+                setWinner(localWinner);
+                setDialog(localWinner === playerColor 
+                  ? "Checkmate! You won! Excellent play!" 
+                  : "Checkmate! You've been defeated. Study and try again!");
+              } else if (game.isStalemate()) {
+                setGameOutcome("stalemate");
+                setDialog("Stalemate! The game is a draw — no legal moves available.");
+              } else if (game.isInsufficientMaterial()) {
+                setGameOutcome("insufficient_material");
+                setDialog("Draw by insufficient material.");
+              } else if (game.isThreefoldRepetition()) {
+                setGameOutcome("threefold");
+                setDialog("Draw by threefold repetition.");
+              } else if (game.isDraw()) {
+                setGameOutcome("draw");
+                setDialog("The game has ended in a draw.");
+              }
+            }
+          } else {
+            // AI move failed to apply locally — resync from backend FEN
+            console.warn("AI move failed locally, resyncing from backend FEN");
+            if (response.fen_after_engine) {
+              game.load(response.fen_after_engine);
+              setPieces(syncPiecesFromGame(game));
+            }
           }
         }
       } catch (error) {
         console.error("Failed to submit move:", error);
-        alert("Failed to get AI response. Check console.");
+        // Undo the local move so the player can try again
+        game.undo();
+        setPieces(syncPiecesFromGame(game));
+        setMoveHistory(prev => prev.slice(0, -1));
+        setDialog("Connection issue — your move was rolled back. Try again.");
       } finally {
         setIsWaitingForAI(false);
       }

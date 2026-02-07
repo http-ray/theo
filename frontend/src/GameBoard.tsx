@@ -313,12 +313,11 @@ const GameBoard: React.FC<GameBoardProps> = ({
               color: '#fff'
             }}>
               {isWaitingForAI ? (
-                <span style={{ opacity: 0.7 }}>AI is thinking...</span>
+                <span className="turn-block" style={{ opacity: 0.7 }}>AI is thinking...</span>
               ) : (
-                <>
+                <div className="turn-block">
                   {game.turn() === 'w' ? "White's Turn" : "Black's Turn"}
-                  
-                </>
+                </div>
               )}
             </div>
           )}

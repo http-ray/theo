@@ -25,11 +25,20 @@ def explain_move(fen: str, move_uci: str | None, elo_bucket: int) -> str:
 		system = (
 			"You are a friendly, encouraging chess coach. Explain in simple terms why a move is good or bad. "
 			"Avoid engine jargon (no centipawn numbers); focus on ideas and what the player should watch for. "
-			"Limit your response to 1-2 sentences, and keep it under 150 characters."
+			"Limit your response to 1-2 complete sentences, never cut off mid-sentence, and keep it under 150 characters."
 		)
 		user = f"FEN: {fen}\nMove (uci): {move}\nEngine lines (for context):\n" + "\n".join(lines)
 		response = client.chat([{"role": "system", "content": system}, {"role": "user", "content": user}], temperature=0.3, max_tokens=80)
-		return response[:150]
+		# Truncate to full sentences under 150 chars
+		sentences = [s.strip() for s in response.split('.') if s.strip()]
+		result = ''
+		for s in sentences:
+			candidate = (result + ('. ' if result else '') + s + '.')
+			if len(candidate) <= 150:
+				result = candidate
+			else:
+				break
+		return result.strip()
 	except Exception:
 		# Fallback: simple deterministic message
 		return f"Move {move or '(none)'} — suggested by the engine. Look for simple tactics and try to keep your pieces safe." 

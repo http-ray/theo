@@ -1,0 +1,49 @@
+# python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.venv/
+venv/
+env/
+
+# database
+*.db
+*.sqlite
+*.sqlite3
+
+# environment
+.env
+.env.local
+
+# ide
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# os
+.DS_Store
+Thumbs.db
+
+# logs
+*.log
+
+# documentation (generated)
+API_READY.md
+INTEGRATION_ANALYSIS.md
+PROJECT_STRUCTURE.md
+CHANGES_COMPARISON.md
+FINAL_STATUS.md
+
+# frontend
+node_modules/
+dist/
+.next/
+out/

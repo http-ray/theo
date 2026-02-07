@@ -243,7 +243,7 @@ body {
 
 /* Mascot */
 .mascot {
-  width: 120px;
+  width: 200px;
   height: auto;
   filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.7));
 }

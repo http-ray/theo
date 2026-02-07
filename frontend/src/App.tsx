@@ -14,6 +14,7 @@ function App() {
   const [currentScreen, setCurrentScreen] = useState<'select' | 'game'>('select');
   const [gameData, setGameData] = useState<GameData | null>(null);
   const [avatar, setAvatar] = useState("public/images/bishop_white.png");
+  
   const handleGameCreated = (data: GameData) => {
     setGameData(data);
     setCurrentScreen('game');

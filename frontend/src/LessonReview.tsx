@@ -86,7 +86,7 @@ const LessonReview: React.FC = () => {
           {/* Instructor avatar */}
           <div className="avatar-wrapper">
             <img
-              src="/images/tiny_knight_white.png"
+              src="public/images/knight_white.png"
               alt="Instructor Avatar"
               className="review-avatar"
             />

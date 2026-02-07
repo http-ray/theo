@@ -45,7 +45,9 @@ export interface MoveResponse {
   mate_player: number | null;
   pv: string[];
   top_moves: AnalysisLine[];
-  llm_response?: string;
+  game_over?: boolean;
+  outcome?: "checkmate" | "stalemate" | "insufficient_material" | "fifty_move" | "threefold" | "draw" | null;
+  winner?: PlayerColor | null;
 }
 
 export interface GameStateResponse {
@@ -133,10 +135,9 @@ export async function createGame(
 export async function submitMove(
   gameId: string,
   from: string,
-  to: string,
-  promotion?: string
+  to: string
 ): Promise<MoveResponse> {
-  const moveUci = promotion ? `${from}${to}${promotion}` : `${from}${to}`;
+  const moveUci = `${from}${to}`;
   return fetchJson<MoveResponse>(`/games/${gameId}/move`, {
     method: "POST",
     body: JSON.stringify({

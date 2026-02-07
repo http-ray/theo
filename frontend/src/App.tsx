@@ -2,6 +2,7 @@ import './App.css'
 import { useState } from 'react'
 import ExperienceSelect from './ExperienceSelect'
 import GameBoard from './GameBoard'
+import LessonReview from './LessonReview'
 
 type GameData = {
   gameId: string;
@@ -11,7 +12,7 @@ type GameData = {
 };
 
 function App() {
-  const [currentScreen, setCurrentScreen] = useState<'select' | 'game'>('select');
+  const [currentScreen, setCurrentScreen] = useState<'select' | 'game' | 'review'>('select');
   const [gameData, setGameData] = useState<GameData | null>(null);
   const [avatar, setAvatar] = useState("public/images/bishop_white.png");
   
@@ -23,6 +24,11 @@ function App() {
   const handleBackToSelect = () => {
     setCurrentScreen('select');
     setGameData(null);
+  };
+
+  const handleGoToReview = () => {
+    console.log('handleGoToReview called! Switching to review screen...');
+    setCurrentScreen('review');
   };
 
   return (
@@ -38,7 +44,11 @@ function App() {
           playerColor={gameData.playerColor}
           startFen={gameData.startFen}
           onExit={handleBackToSelect}
+          onGoToReview={handleGoToReview}
         />
+      )}
+      {currentScreen === 'review' && (
+        <LessonReview />
       )}
     </>
   )

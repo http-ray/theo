@@ -6,7 +6,7 @@ type Level = {
 };
 
 const levels: Level[] = [
-  { name: "Beginner", piece: "public/images/tiny_bishop_white.png" },
+  { name: "Beginner", piece: "public/images/tiny_pawn_white.png" },
   { name: "Intermediate", piece: "public/images/tiny_knight_white.png" },
   { name: "Advanced", piece: "public/images/tiny_rook_white.png" },
   { name: "Master", piece: "public/images/tiny_queen_white.png" },

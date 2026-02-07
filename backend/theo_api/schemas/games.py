@@ -55,6 +55,8 @@ class MoveResponse(BaseModel):
     outcome: Optional[Literal["checkmate", "stalemate", "insufficient_material", "fifty_move", "threefold", "draw"]] = None
     winner: Optional[Color] = None
 
+    llm_response: Optional[str] = None
+
 
 class GameStateResponse(BaseModel):
     game_id: str

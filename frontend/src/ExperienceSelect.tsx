@@ -18,7 +18,7 @@ type ExperienceSelectProps = {
 };
 
 const levels: Level[] = [
-  { name: "Beginner", piece: "public/images/tiny_bishop_white.png", bigPiece:"public/images/bishop_white.png", elo: 400 },
+  { name: "Beginner", piece: "public/images/tiny_pawn_white.png", bigPiece:"public/images/bishop_white.png", elo: 400 },
   { name: "Intermediate", piece: "public/images/tiny_knight_white.png", bigPiece:"public/images/knight_white.png", elo: 800 },
   { name: "Advanced", piece: "public/images/tiny_rook_white.png", bigPiece:"public/images/rook_white.png", elo: 1200 },
   { name: "Master", piece: "public/images/tiny_queen_white.png", bigPiece:"public/images/queen_white.png", elo: 2000 },

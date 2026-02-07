@@ -15,7 +15,7 @@ function App() {
   const [currentScreen, setCurrentScreen] = useState<'select' | 'game' | 'review'>('select');
   const [gameData, setGameData] = useState<GameData | null>(null);
   
-  const avatar = "public/images/pawn_black.png";
+  const avatar = "public/images/theo_neutral.png";
   
   const handleGameCreated = (data: GameData) => {
     setGameData(data);
@@ -31,6 +31,8 @@ function App() {
     console.log('handleGoToReview called! Switching to review screen...');
     setCurrentScreen('review');
   };
+
+  
 
   return (
     <>

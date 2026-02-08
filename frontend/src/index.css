@@ -307,6 +307,14 @@ body {
     drop-shadow(0 10px 30px rgba(0, 0, 0, 0.7));
 }
 
+.name-tag {
+  margin: 10px 0 0;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: rgba(230, 220, 255, 0.92);
+  text-shadow: 0 0 12px rgba(180, 150, 255, 0.18);
+}
+
 /* Speech box */
 .speech-box {
   position: relative;

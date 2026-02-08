@@ -315,6 +315,9 @@ body {
   background: rgba(160, 120, 255, 0.12);
   border-radius: 16px;
   transition: all 0.35s ease;
+  max-height: min(320px, calc(100vh - 220px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .speech-box p {

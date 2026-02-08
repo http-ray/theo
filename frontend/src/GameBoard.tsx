@@ -807,7 +807,9 @@ const GameBoard: React.FC<GameBoardProps> = ({
         {/* Speech / dialogue box */}
         <div className="speech-box">
           <span className="quote left">“</span>
-          <p>{dialog}</p>
+          <div className="speech-box-content">
+            <p>{dialog}</p>
+          </div>
           <span className="quote right">”</span>
         </div>
 

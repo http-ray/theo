@@ -323,6 +323,39 @@ body {
   background: rgba(160, 120, 255, 0.12);
   border-radius: 16px;
   transition: all 0.35s ease;
+  overflow: visible;
+}
+
+.speech-box::before {
+  content: "";
+  position: absolute;
+  left: 59%;
+  bottom: -18px;
+  width: 0;
+  height: 0;
+  transform: translateX(-50%);
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-top: 22px solid rgba(180, 150, 255, 0.12);
+  filter: drop-shadow(0 8px 14px rgba(20, 10, 40, 0.35));
+  pointer-events: none;
+}
+
+.speech-box::after {
+  content: "";
+  position: absolute;
+  left: 59%;
+  bottom: -16px;
+  width: 0;
+  height: 0;
+  transform: translateX(-50%);
+  border-left: 18px solid transparent;
+  border-right: 18px solid transparent;
+  border-top: 20px solid rgba(160, 120, 255, 0.12);
+  pointer-events: none;
+}
+
+.speech-box-content {
   max-height: min(320px, calc(100vh - 220px));
   overflow-y: auto;
   overscroll-behavior: contain;

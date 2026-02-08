@@ -3,6 +3,7 @@ import { useState } from 'react'
 import ExperienceSelect from './ExperienceSelect'
 import GameBoard from './GameBoard'
 import LessonReview from './LessonReview'
+import PieceGuide from "./PieceGuide";
 
 type GameData = {
   gameId: string;
@@ -12,7 +13,7 @@ type GameData = {
 };
 
 function App() {
-  const [currentScreen, setCurrentScreen] = useState<'select' | 'game' | 'review'>('select');
+  const [currentScreen, setCurrentScreen] = useState<'select' | 'game' | 'review' | 'pieceGuide'>('select');
   const [gameData, setGameData] = useState<GameData | null>(null);
   
   const avatar = "public/images/theo_magical.png";
@@ -33,7 +34,7 @@ function App() {
   };
 
   
-
+  
   return (
     <div className='starfield'>
       {currentScreen === 'select' && (

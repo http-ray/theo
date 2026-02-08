@@ -35,7 +35,7 @@ function App() {
   
 
   return (
-    <>
+    <div className='starfield'>
       {currentScreen === 'select' && (
         <ExperienceSelect onGameCreated={handleGameCreated}/>
       )}
@@ -57,7 +57,7 @@ function App() {
           onNewLesson={handleBackToSelect}
         />
       )}
-    </>
+    </div>
   )
 }
 

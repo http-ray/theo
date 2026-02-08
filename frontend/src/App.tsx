@@ -38,7 +38,29 @@ function App() {
   return (
     <div className='starfield'>
       {currentScreen === 'select' && (
-        <ExperienceSelect onGameCreated={handleGameCreated}/>
+        <>
+          <ExperienceSelect onGameCreated={handleGameCreated} />
+          <div style={{ position: 'fixed', bottom: '20px', right: '20px' }}>
+            <button
+              onClick={() => setCurrentScreen('pieceGuide')}
+              style={{
+                background: 'rgba(0, 0, 0, 0.7)',
+                color: '#fff',
+                border: '2px solid #eebc4a',
+                borderRadius: '8px',
+                padding: '10px 20px',
+                fontSize: '1rem',
+                cursor: 'pointer',
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)',
+                transition: 'background 0.3s, transform 0.2s',
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.background = 'rgba(0, 0, 0, 0.9)')}
+              onMouseOut={(e) => (e.currentTarget.style.background = 'rgba(0, 0, 0, 0.7)')}
+            >
+              Chess Piece Guide
+            </button>
+          </div>
+        </>
       )}
       {currentScreen === 'game' && gameData && (
         <GameBoard 
@@ -58,6 +80,7 @@ function App() {
           onNewLesson={handleBackToSelect}
         />
       )}
+      {currentScreen === 'pieceGuide' && <PieceGuide onBack={() => setCurrentScreen('select')}/>}
     </div>
   )
 }
